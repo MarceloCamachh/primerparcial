@@ -1,0 +1,51 @@
+import { ElementType, exportElements, Frame, importElements } from "../hooks/useElements";
+
+type Props = {
+  onAddElement: (type: ElementType) => void;
+  elements: Frame[];
+  onImport: (data: Frame[]) => void;
+};
+
+export default function Toolbar({ onAddElement, elements, onImport }: Props) {
+  return (
+    <div className="w-60 bg-white shadow-md p-4">
+      <h2 className="font-bold text-lg mb-4">Herramientas</h2>
+      <button
+        onClick={() => onAddElement("rectangle")}
+        className="w-full py-2 mb-2 bg-blue-500 text-white rounded hover:bg-blue-600"
+      >
+        + Rectángulo
+      </button>
+      <button
+        onClick={() => onAddElement("text")}
+        className="w-full py-2 mb-2 bg-green-500 text-white rounded hover:bg-green-600"
+      >
+        + Texto
+      </button>
+      <button
+        onClick={() => onAddElement("button")}
+        className="w-full py-2 mb-2 bg-purple-500 text-white rounded hover:bg-purple-600"
+      >
+        + Botón
+      </button>
+      <button
+        onClick={() => onAddElement("input")}
+        className="w-full py-2 bg-orange-500 text-white rounded hover:bg-orange-600"
+      >
+        + Input
+      </button>
+      <button
+        onClick={() => exportElements(elements)}
+        className="w-full py-2 mt-4 bg-gray-600 text-white rounded hover:bg-gray-700"
+        >
+        💾 Exportar JSON
+        </button>
+        <button
+            onClick={() => importElements(onImport)}
+            className="w-full py-2 mt-2 bg-green-700 text-white rounded hover:bg-green-800"
+            >
+            📂 Importar JSON
+        </button>
+    </div>
+  );
+}
