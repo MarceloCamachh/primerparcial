@@ -4,8 +4,10 @@ import CanvasElement from "./CanvasElement";
 import Navbar from "../components/Navbar";
 import { useEffect } from "react";
 import { socket } from "../socket";
+import { useParams } from "react-router-dom";
 
 export default function CanvasEditor() {
+  const { roomId } = useParams();
   const {
     elements,
     selectedId,
