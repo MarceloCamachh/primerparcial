@@ -1,12 +1,15 @@
 import { ElementType, exportElements, Frame, importElements } from "../hooks/useElements";
+import { generateAngularProject } from "../utils/GenerateAngular";
+import { Design } from "../services/designService";  // Importa el tipo Design
 
 type Props = {
   onAddElement: (type: ElementType) => void;
   elements: Frame[];
   onImport: (data: Frame[]) => void;
+  currentDesign: Design | null;
 };
 
-export default function Toolbar({ onAddElement, elements, onImport }: Props) {
+export default function Toolbar({ onAddElement, elements, onImport, currentDesign }: Props) {
   return (
     <div className="w-60 bg-white shadow-md p-4">
       <h2 className="font-bold text-lg mb-4">Herramientas</h2>
@@ -45,6 +48,19 @@ export default function Toolbar({ onAddElement, elements, onImport }: Props) {
             className="w-full py-2 mt-2 bg-green-700 text-white rounded hover:bg-green-800"
             >
             📂 Importar JSON
+        </button>
+        <button
+          onClick={() => {
+            if (currentDesign) {
+              generateAngularProject(currentDesign);
+            } else {
+              alert("❌ No hay diseño cargado.");
+            }
+          }}
+          className="w-full py-2 mt-2 bg-indigo-600 text-white rounded hover:bg-indigo-700"
+          disabled={!currentDesign}
+        >
+          🚀 Exportar Angular
         </button>
     </div>
   );

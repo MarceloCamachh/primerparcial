@@ -2,12 +2,19 @@ import { useElements } from "../hooks/useElements";
 import Toolbar from "./Toolbar";
 import CanvasElement from "./CanvasElement";
 import Navbar from "../components/Navbar";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { socket } from "../socket";
 import { useParams } from "react-router-dom";
+import {getDesignById,updateDesign,Design,} from "../services/designService";
 
 export default function CanvasEditor() {
-  const { roomId } = useParams();
+  const params = useParams<{ roomId?: string }>();
+  const roomId = params.roomId;
+  const [currentDesign, setCurrentDesign] = useState<Design | null>(null);
+  
+  if (!roomId) {
+    return <div className="text-red-500 text-center mt-10">❌ Room ID inválido</div>;
+  }
   const {
     elements,
     selectedId,
@@ -16,12 +23,32 @@ export default function CanvasEditor() {
     duplicateElement,
     setSelectedId,
     setAllElements,
-  } = useElements();
+  } = useElements(roomId);
+
+  const handleSave = async () => {
+    if (!currentDesign) return alert("⚠️ No hay diseño para guardar");
+  
+    const updated = await updateDesign(currentDesign.id, {
+      data: elements,
+    });
+  
+    setCurrentDesign(updated);
+    alert("✅ Diseño actualizado");
+  };
+  
 
   useEffect(() => {
-    socket.emit("join", "room-1"); // Puedes cambiar a un ID dinámico
-    console.log("Joined room-1");
-  }, []);
+  const fetchDesign = async () => {
+    if (!roomId) return;
+    const design = await getDesignById(roomId);
+    setCurrentDesign(design);
+    setAllElements(design.data || []);
+    socket.emit("join", roomId);
+    console.log("🧩 Joined room:", roomId);
+  };
+
+  fetchDesign();
+}, [roomId]);
 
   return (
     <>
@@ -31,6 +58,7 @@ export default function CanvasEditor() {
         onAddElement={addElement}
         elements={elements}
         onImport={setAllElements}
+        currentDesign={currentDesign}  
       />
   
         <div
@@ -49,10 +77,28 @@ export default function CanvasEditor() {
               onSelect={() => setSelectedId(element.id)}
               onDelete={() => deleteElement(element.id)}
               onDuplicate={duplicateElement}
+              roomId={roomId}
             />
           ))}
+           <button
+          onClick={handleSave}
+          className="absolute top-4 right-4 px-4 py-2 bg-green-500 text-white rounded hover:bg-green-600 z-50"
+        >
+          💾 Guardar diseño
+        </button>
+        <button
+          onClick={() => {
+            navigator.clipboard.writeText(roomId);
+            alert("📋 ID copiado al portapapeles: " + roomId);
+          }}
+          className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
+        >
+          🔗 Compartir ID
+        </button>
         </div>
       </div>
+     
     </>
+    
   );
 }

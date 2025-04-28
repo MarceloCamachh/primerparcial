@@ -10,12 +10,14 @@ export default function CanvasElement({
   onSelect,
   onDelete,
   onDuplicate,
+  roomId,
 }: {
   frame: Frame;
   isSelected: boolean;
   onSelect: () => void;
   onDelete: () => void;
   onDuplicate: (newFrame: Frame) => void;
+  roomId: string;
 }) {
   const ref = useRef<HTMLDivElement>(null);
   const [update, setUpdate] = useState<number>(0);
@@ -210,7 +212,7 @@ export default function CanvasElement({
             onDrag={({ beforeTranslate }) => {
             frame.translate = [beforeTranslate[0], beforeTranslate[1]];
             applyStyle();
-            socket.emit("element:update", { roomId: "room-1", frame });
+            socket.emit("element:update", { roomId, frame });
 
             }}
             onResize={({ width, height, drag }) => {
@@ -221,12 +223,12 @@ export default function CanvasElement({
                 drag.beforeTranslate[1],
             ];
             applyStyle();
-            socket.emit("element:update", { roomId: "room-1", frame });
+            socket.emit("element:update", { roomId, frame });
             }}
             onRotate={({ beforeRotate }) => {
             frame.rotate = beforeRotate;
             applyStyle();
-            socket.emit("element:update", { roomId: "room-1", frame });
+            socket.emit("element:update", { roomId, frame });
             }}
             onDragEnd={() => setUpdate((u) => u + 1)}
             onResizeEnd={() => setUpdate((u) => u + 1)}

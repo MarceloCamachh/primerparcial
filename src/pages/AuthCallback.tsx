@@ -8,12 +8,13 @@ export default function AuthCallback() {
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);
     const token = params.get("token");
+    const email = params.get("email");
     const name = params.get("name");
     const picture = params.get("picture");
 
-    if (token && name && picture) {
+    if (token && email && name && picture) {
       localStorage.setItem("token", token);
-      localStorage.setItem("user", JSON.stringify({ name, picture }));
+      localStorage.setItem("user", JSON.stringify({ email, name, picture }));
       navigate("/"); // vuelve al editor
     }
   }, [navigate]);
