@@ -31,16 +31,29 @@ export const generateAngularProject = async (design: Design) => {
     zip.file(file, content);
   }));
 
-  // 2️⃣ Generar dinámicamente el app.component.html
+  // 2️⃣ Generar dinámicamente el app.component.html con estilos
   const dynamicHtml = `
-    <h1>${design.title}</h1>
-    ${design.data.map((el: any) => {
-      if (el.type === "text") return `<p>${el.content}</p>`;
-      if (el.type === "button") return `<button>${el.content}</button>`;
-      if (el.type === "input") return `<input placeholder="${el.content}" />`;
-      if (el.type === "rectangle") return `<div class="rectangle"></div>`;
-      return "";
-    }).join("\n")}
+    <div style="position: relative; min-height: 100vh;">
+      <h1>${design.title}</h1>
+      ${design.data.map((el: any) => {
+        const style = `
+          position: absolute;
+          width: ${el.width}px;
+          height: ${el.height}px;
+          transform: translate(${el.translate[0]}px, ${el.translate[1]}px) rotate(${el.rotate}deg);
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          ${el.type === "rectangle" ? "background-color: #38bdf8;" : ""}
+        `.trim();
+
+        if (el.type === "text") return `<p style="${style}">${el.content}</p>`;
+        if (el.type === "button") return `<button style="${style}">${el.content}</button>`;
+        if (el.type === "input") return `<input style="${style}" placeholder="${el.content}" />`;
+        if (el.type === "rectangle") return `<div style="${style}"></div>`;
+        return "";
+      }).join("\n")}
+    </div>
   `;
 
   zip.file("src/app/app.component.html", dynamicHtml);
