@@ -1,9 +1,11 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import Navbar from "../components/Navbar";
 import NewDesignModal from "../components/NewDesignModal";
 import { createDesign, getDesignsByUser, Design, getDesignById } from "../services/designService";
 import JoinProjectModal from "../components/JoinProjectModal";
+import { generateDesignFromUML } from "../utils/generateDesignFromUML";
+import { parseXMLFile } from "../utils/parseXML";
 
 export default function Home() {
   const [user, setUser] = useState<{ name: string; picture: string; email: string } | null>(null);
@@ -11,6 +13,31 @@ export default function Home() {
   const [designs, setDesigns] = useState<Design[]>([]);
   const [showModal, setShowModal] = useState(false);
   const [showJoinModal, setShowJoinModal] = useState(false);
+  const fileInputRef = useRef<HTMLInputElement>(null);
+
+  const handleUploadXML = async (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    if (!file) return;
+  
+    const parsed = await parseXMLFile(file);
+    console.log("📂 XML Parseado:", parsed);
+  
+    const extractedDesign = generateDesignFromUML(parsed);
+  
+    const user = JSON.parse(localStorage.getItem("user") || "{}");
+    if (!user?.email) {
+      alert("Debes estar logueado para importar un UML");
+      return;
+    }
+  
+    const savedDesign = await createDesign({
+      title: extractedDesign.title,
+      data: extractedDesign.elements,
+      userEmail: user.email,
+    });
+  
+    navigate(`/canvas/${savedDesign.id}`);
+  };
   useEffect(() => {
     const storedUser = JSON.parse(localStorage.getItem("user") || "{}");
     if (storedUser?.email) {
@@ -71,9 +98,21 @@ export default function Home() {
           >
             Unirse a un proyecto
           </button>
+          <button
+              onClick={() => fileInputRef.current?.click()}
+              className="mt-4 bg-purple-600 text-white px-4 py-2 rounded hover:bg-purple-700"
+            >
+              📂 Importar UML
+            </button>
           </div>
         </div>
-
+        <input
+          type="file"
+          accept=".xml"
+          ref={fileInputRef}
+          style={{ display: "none" }}
+          onChange={handleUploadXML}
+        />
         {user && (
           <div className="mt-10">
             <h2 className="text-2xl font-semibold mb-4">📂 Tus Proyectos Recientes</h2>
@@ -108,7 +147,9 @@ export default function Home() {
           onClose={() => setShowJoinModal(false)}
           onJoin={handleJoinProject}
         />
+        
       </div>
     </>
   );
 }
+
