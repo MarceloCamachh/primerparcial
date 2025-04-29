@@ -49,7 +49,14 @@ export default function CanvasElement({
           height: `${frame.height}px`,
         }}
       >
-        {frame.type === "rectangle" && <div className="w-full h-full bg-sky-400" />}
+        {frame.type === "rectangle" && (
+          <div
+            className="w-full h-full"
+            style={{
+              backgroundColor: frame.backgroundColor || "#38bdf8", // "#38bdf8" = tailwind sky-400
+            }}
+          />
+        )}
 
         {(frame.type === "text" || frame.type === "button") && !isEditing && (
           <div
@@ -138,21 +145,21 @@ export default function CanvasElement({
                 left: frame.translate[0] + frame.width + 10,
               }}
             >
-              {(frame.type === "rectangle" || frame.type === "button") && (
-                <button
-                  onClick={() => {
-                    const color = prompt("Nuevo color de fondo (ej: red, #ff0, rgb(0,0,255)):");
-                    if (color && ref.current) {
-                      ref.current.style.backgroundColor = color;
-                    }
-                    setShowMenu(false);
-                  }}
-                  className="block w-full px-3 py-1 hover:bg-gray-100 text-left"
-                >
-                  🎨 Cambiar color
-                </button>
+             {(frame.type === "rectangle" || frame.type === "button") && (
+                <div className="block w-full px-3 py-1 text-left">
+                  🎨 Cambiar color:
+                  <input
+                    type="color"
+                    className="ml-2"
+                    value={frame.backgroundColor || "#38bdf8"}
+                    onChange={(e) => {
+                      frame.backgroundColor = e.target.value;
+                      setUpdate((u) => u + 1);
+                      setShowMenu(false);
+                    }}
+                  />
+                </div>
               )}
-
               <button
                 onClick={() => {
                   const newFrame = {

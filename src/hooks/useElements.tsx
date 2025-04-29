@@ -12,6 +12,7 @@ export type Frame = {
   rotate: number;
   width: number;
   height: number;
+  backgroundColor?: string;
 };
 
 export function exportElements(elements: Frame[]) {
