@@ -58,21 +58,24 @@ export default function CanvasElement({
           />
         )}
 
-        {(frame.type === "text" || frame.type === "button") && !isEditing && (
-          <div
-          className={
-                frame.type === "button"
-                  ? "text-white px-2 py-1 rounded"
-                  : "text-black"
-              }
-              style={{
-                backgroundColor: frame.backgroundColor || "#3b82f6", // default: blue-500
-              }}
-              onDoubleClick={() => setIsEditing(true)}
-            >
-              {frame.content}
-            </div>
-        )}
+{!isEditing && frame.type === "button" && (
+  <div
+    className="text-white px-2 py-1 rounded"
+    style={{ backgroundColor: frame.backgroundColor || "#3b82f6" }}
+    onDoubleClick={() => setIsEditing(true)}
+  >
+    {frame.content}
+  </div>
+)}
+
+{!isEditing && frame.type === "text" && (
+  <div
+    className="text-black"
+    onDoubleClick={() => setIsEditing(true)}
+  >
+    {frame.content}
+  </div>
+)}
 
         {(frame.type === "text" || frame.type === "button") && isEditing && (
           <input
