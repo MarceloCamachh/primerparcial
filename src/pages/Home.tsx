@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import Navbar from "../components/Navbar";
 import NewDesignModal from "../components/NewDesignModal";
-import { createDesign, getDesignsByUser, Design, getDesignById } from "../services/designService";
+import { createDesign, getDesignsByUser, Design, getDesignById, deleteDesign } from "../services/designService";
 import JoinProjectModal from "../components/JoinProjectModal";
 import { generateDesignFromUML } from "../utils/generateDesignFromUML";
 import { parseXMLFile } from "../utils/parseXML";
@@ -78,6 +78,19 @@ export default function Home() {
       alert("❌ No se encontró un proyecto con ese ID.");
     }
   };
+  const handleDeleteDesign = async (id: string) => {
+    const confirm = window.confirm("¿Estás seguro de que deseas eliminar este diseño?");
+    if (!confirm) return;
+  
+    try {
+      await deleteDesign(id);
+      setDesigns((prev) => prev.filter((d) => d.id !== id));
+    } catch (error) {
+      alert("❌ Error al eliminar el diseño.");
+      console.error(error);
+    }
+  };
+  
   return (
     <>
       <Navbar />
@@ -123,13 +136,23 @@ export default function Home() {
                 {designs.map((design) => (
                   <div
                     key={design.id}
-                    className="p-4 border rounded shadow hover:bg-gray-100 cursor-pointer"
+                    className="relative p-4 border rounded shadow hover:bg-gray-100 cursor-pointer"
                     onClick={() => navigate(`/canvas/${design.id}`)}
                   >
                     <h3 className="font-bold">{design.title}</h3>
                     <p className="text-xs text-gray-500">
                       Última edición: {new Date(design.updatedAt).toLocaleString()}
                     </p>
+
+                    <button
+                      onClick={(e) => {
+                        e.stopPropagation(); // 🛑 evitar que navegue al canvas
+                        handleDeleteDesign(design.id);
+                      }}
+                      className="absolute top-2 right-2 bg-red-500 text-white text-xs px-2 py-1 rounded hover:bg-red-600"
+                    >
+                      🗑️ Eliminar
+                    </button>
                   </div>
                 ))}
               </div>
