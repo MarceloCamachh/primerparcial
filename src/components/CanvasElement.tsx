@@ -69,12 +69,17 @@ export default function CanvasElement({
         )}
 
         {!isEditing && frame.type === "text" && (
-          <div
-          className="text-black w-full h-full flex items-center justify-center"
-          onDoubleClick={() => setIsEditing(true)}
-        >
-          {frame.content}
-        </div>
+         <div
+         className="w-full h-full flex items-center justify-center"
+         style={{
+           fontSize: `${Math.max(frame.width / 15, 12)}px`,
+           color: "black",
+         }}
+         onDoubleClick={() => setIsEditing(true)}
+       >
+         {frame.content}
+       </div>
+       
         )}
 
         {(frame.type === "text" || frame.type === "button") && isEditing && (
