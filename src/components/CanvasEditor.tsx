@@ -82,7 +82,7 @@ export default function CanvasEditor() {
           ))}
            <button
           onClick={handleSave}
-          className="absolute top-4 right-4 px-4 py-2 bg-green-500 text-white rounded hover:bg-green-600 z-50"
+          className="absolute top-4 right-4 px-4 py-2  text-white rounded hover:bg-green-600 z-50 bg-gray-500 text-gray-800 hover:bg-gray-200"
         >
           💾 Guardar diseño
         </button>
@@ -91,7 +91,7 @@ export default function CanvasEditor() {
             navigator.clipboard.writeText(roomId);
             alert("📋 ID copiado al portapapeles: " + roomId);
           }}
-          className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
+          className="px-4 py-2 bg-gray-500 text-white mt-4 ml-4 rounded hover:bg-blue-600"
         >
           🔗 Compartir ID
         </button>

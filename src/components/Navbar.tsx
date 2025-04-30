@@ -7,18 +7,14 @@ export default function Navbar() {
   const [user, setUser] = useState<{ name: string; picture: string } | null>(null);
   const [showLogoutModal, setShowLogoutModal] = useState(false);
   const navigate = useNavigate();
-  const location = useLocation();  // 🔹 Detecta la ruta actual
+  const location = useLocation();
 
   useEffect(() => {
     const stored = localStorage.getItem("user");
-    if (stored) {
-      setUser(JSON.parse(stored));
-    }
+    if (stored) setUser(JSON.parse(stored));
   }, []);
 
-  const handleLogout = () => {
-    setShowLogoutModal(true);
-  };
+  const handleLogout = () => setShowLogoutModal(true);
 
   const handleConfirmLogout = () => {
     localStorage.removeItem("token");
@@ -26,33 +22,29 @@ export default function Navbar() {
     window.location.href = "/";
   };
 
-  // 🔹 Define el mensaje dinámico
   const logoutMessage = location.pathname.startsWith("/canvas")
     ? "Estás en medio de la edición de un proyecto. Si cierras sesión ahora podrías perder los cambios. ¿Deseas continuar?"
     : "¿Estás seguro que deseas cerrar sesión?";
 
   return (
     <>
-      <header className="w-full h-14 bg-white shadow flex items-center justify-between px-6 border-b border-gray-200">
-        <h1 className="text-2xl font-bold">
-          <Link to="/">HOME</Link>
-        </h1>
-        <h1 className="text-3xl font-extrabold tracking-wide cursor-pointer">MI EDITOR</h1>
+      <header className="w-full h-16 bg-white shadow-md flex items-center justify-between px-8 border-b border-gray-200">
+        <Link to="/" className="text-xl font-semibold text-gray-800 hover:text-indigo-600 transition">
+          🏠 Inicio
+        </Link>
+
+        <h1 className="text-4xl font-bold tracking-tight text-black text-indigo-700">MyEDITOR</h1>
 
         <div className="flex items-center gap-4">
           {user ? (
             <>
               <div className="flex items-center gap-2">
-                <img
-                  src={user.picture}
-                  alt="avatar"
-                  className="w-8 h-8 rounded-full object-cover"
-                />
-                <span className="text-sm font-medium">{user.name}</span>
+                <img src={user.picture} alt="avatar" className="w-9 h-9 rounded-full object-cover border" />
+                <span className="text-sm font-medium text-gray-700">{user.name}</span>
               </div>
               <button
                 onClick={handleLogout}
-                className="text-sm px-3 py-1 bg-red-500 text-white rounded hover:bg-red-600"
+                className="text-sm px-4 py-2 rounded-md bg-red-500 text-white hover:bg-red-600 transition"
               >
                 Cerrar sesión
               </button>
@@ -60,7 +52,7 @@ export default function Navbar() {
           ) : (
             <a
               href={`${BACKEND_URL}/auth/google`}
-              className="text-sm px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
+              className="text-sm px-4 py-2 rounded-md bg-blue-600 text-white hover:bg-blue-700 transition"
             >
               Iniciar con Google
             </a>
@@ -68,7 +60,6 @@ export default function Navbar() {
         </div>
       </header>
 
-      {/* Modal dinámico */}
       <LogoutConfirmationModal
         isOpen={showLogoutModal}
         onCancel={() => setShowLogoutModal(false)}

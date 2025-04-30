@@ -1,6 +1,6 @@
 import { ElementType, exportElements, Frame, importElements } from "../hooks/useElements";
+import { Design } from "../services/designService";
 import { generateAngularProject } from "../utils/GenerateAngular";
-import { Design } from "../services/designService";  // Importa el tipo Design
 
 type Props = {
   onAddElement: (type: ElementType) => void;
@@ -10,61 +10,57 @@ type Props = {
 };
 
 export default function Toolbar({ onAddElement, elements, onImport, currentDesign }: Props) {
+  const btnBase = "w-full px-4 py-2 text-sm font-medium rounded-md transition";
+  const secondaryBtn  = "bg-gray-100 text-gray-800 hover:bg-gray-200";
+  const primaryBtn = "bg-gray-800 text-white hover:bg-gray-700 disabled:opacity-50";
+
   return (
-    <div className="w-60 bg-white shadow-md p-4">
-      <h2 className="font-bold text-lg mb-4">Herramientas</h2>
-      <button
-        onClick={() => onAddElement("rectangle")}
-        className="w-full py-2 mb-2 bg-blue-500 text-white rounded hover:bg-blue-600"
-      >
-        + Rectángulo
-      </button>
-      <button
-        onClick={() => onAddElement("text")}
-        className="w-full py-2 mb-2 bg-green-500 text-white rounded hover:bg-green-600"
-      >
-        + Texto
-      </button>
-      <button
-        onClick={() => onAddElement("button")}
-        className="w-full py-2 mb-2 bg-purple-500 text-white rounded hover:bg-purple-600"
-      >
-        + Botón
-      </button>
-      <button
-        onClick={() => onAddElement("input")}
-        className="w-full py-2 bg-orange-500 text-white rounded hover:bg-orange-600"
-      >
-        + Input
-      </button>
-      <button onClick={() => onAddElement('checkbox')} className="w-full mt-2 bg-indigo-500 text-white px-2 py-1 rounded">+ Checkbox</button>
-      <button onClick={() => onAddElement('image')} className="w-full mt-2 bg-pink-500 text-white px-2 py-1 rounded">+ Imagen</button>
-      <button onClick={() => onAddElement('table')} className="w-full mt-2 bg-yellow-600 text-white px-2 py-1 rounded">+ Tabla</button>
-      <button
-        onClick={() => exportElements(elements)}
-        className="w-full py-2 mt-4 bg-gray-600 text-white rounded hover:bg-gray-700"
-        >
-        💾 Exportar JSON
+    <div className="w-64 bg-white shadow-lg p-5 border-r border-gray-200">
+      <h2 className="text-lg font-semibold text-gray-800 mb-6">🛠️ Herramientas</h2>
+
+      <div className="space-y-3">
+        <button onClick={() => onAddElement("rectangle")} className={`${btnBase} ${primaryBtn}`}>
+          + Rectángulo
+        </button>
+        <button onClick={() => onAddElement("text")} className={`${btnBase} ${primaryBtn}`}>
+          + Texto
+        </button>
+        <button onClick={() => onAddElement("button")} className={`${btnBase} ${primaryBtn}`}>
+          + Botón
+        </button>
+        <button onClick={() => onAddElement("input")} className={`${btnBase} ${primaryBtn}`}>
+          + Input
+        </button>
+        <button onClick={() => onAddElement("checkbox")} className={`${btnBase} ${primaryBtn}`}>
+          + Checkbox
+        </button>
+        <button onClick={() => onAddElement("image")} className={`${btnBase} ${primaryBtn}`}>
+          + Imagen
+        </button>
+        <button onClick={() => onAddElement("table")} className={`${btnBase} ${primaryBtn}`}>
+          + Tabla
+        </button>
+      </div>
+
+      <div className="border-t border-gray-300 my-6"></div>
+
+      <div className="space-y-3">
+        <button onClick={() => exportElements(elements)} className={`${btnBase} ${secondaryBtn}`}>
+          💾 Exportar JSON
+        </button>
+        <button onClick={() => importElements(onImport)} className={`${btnBase} ${secondaryBtn}`}>
+          📂 Importar JSON
         </button>
         <button
-            onClick={() => importElements(onImport)}
-            className="w-full py-2 mt-2 bg-green-700 text-white rounded hover:bg-green-800"
-            >
-            📂 Importar JSON
-        </button>
-        <button
-          onClick={() => {
-            if (currentDesign) {
-              generateAngularProject(currentDesign);
-            } else {
-              alert("❌ No hay diseño cargado.");
-            }
-          }}
-          className="w-full py-2 mt-2 bg-indigo-600 text-white rounded hover:bg-indigo-700"
+          onClick={() =>
+            currentDesign ? generateAngularProject(currentDesign) : alert("❌ No hay diseño cargado.")
+          }
+          className={`${btnBase} ${secondaryBtn}`}
           disabled={!currentDesign}
         >
           🚀 Exportar Angular
         </button>
+      </div>
     </div>
   );
 }
