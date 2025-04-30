@@ -37,9 +37,9 @@ export default function Toolbar({ onAddElement, elements, onImport, currentDesig
       >
         + Input
       </button>
-      <button onClick={() => onAddElement('checkbox')} className="bg-indigo-500 text-white px-2 py-1 rounded">+ Checkbox</button>
-      <button onClick={() => onAddElement('image')} className="bg-pink-500 text-white px-2 py-1 rounded">+ Imagen</button>
-      <button onClick={() => onAddElement('table')} className="bg-yellow-600 text-white px-2 py-1 rounded">+ Tabla</button>
+      <button onClick={() => onAddElement('checkbox')} className="w-full bg-indigo-500 text-white px-2 py-1 rounded">+ Checkbox</button>
+      <button onClick={() => onAddElement('image')} className="w-full bg-pink-500 text-white px-2 py-1 rounded">+ Imagen</button>
+      <button onClick={() => onAddElement('table')} className="w-full bg-yellow-600 text-white px-2 py-1 rounded">+ Tabla</button>
       <button
         onClick={() => exportElements(elements)}
         className="w-full py-2 mt-4 bg-gray-600 text-white rounded hover:bg-gray-700"
