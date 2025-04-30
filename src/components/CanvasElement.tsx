@@ -79,8 +79,97 @@ export default function CanvasElement({
        >
          {frame.content}
        </div>
-       
         )}
+        {/* CHECKBOX */}
+          {frame.type === "checkbox" && (
+            <label className="flex items-center space-x-2 w-full h-full justify-center">
+              <input type="checkbox" className="h-5 w-5" />
+              <span>{frame.content || "Opción"}</span>
+            </label>
+          )}
+
+          {/* IMAGE */}
+          {frame.type === "image" && (
+          <div className="w-full h-full relative">
+            <img
+              src={frame.content || "https://via.placeholder.com/150"}
+              alt="Imagen"
+              className="w-full h-full object-contain"
+            />
+            {isSelected && (
+              <input
+                type="file"
+                accept="image/*"
+                className="absolute bottom-2 left-2 text-xs z-50"
+                onChange={(e) => {
+                  const file = e.target.files?.[0];
+                  if (!file) return;
+
+                  const reader = new FileReader();
+                  reader.onload = () => {
+                    frame.content = reader.result as string;
+                    setUpdate((u) => u + 1);
+                    socket.emit("element:update", { roomId, frame });
+                  };
+                  reader.readAsDataURL(file);
+                }}
+              />
+            )}
+          </div>
+        )}
+
+          {/* TABLE */}
+          {frame.type === "table" && (
+  <div className="w-full h-full flex flex-col items-center justify-center text-xs">
+    <table className="table-auto border border-black w-full h-full text-center">
+      <tbody>
+        {Array.from({ length: Number(frame.rows) || 3 }).map((_, rowIdx) => (
+          <tr key={rowIdx}>
+            {Array.from({ length: Number(frame.cols) || 3 }).map((_, colIdx) => (
+              <td key={colIdx} className="border border-black">
+                {`Celda ${rowIdx + 1}-${colIdx + 1}`}
+              </td>
+            ))}
+          </tr>
+        ))}
+      </tbody>
+    </table>
+
+    {isSelected && (
+      <div className="absolute bottom-1 left-1 bg-white bg-opacity-80 px-1 py-0.5 rounded border text-[10px] flex items-center gap-1">
+        <label>
+          Filas:
+          <input
+            type="number"
+            min={1}
+            className="border ml-1 w-10"
+            value={frame.rows || 3}
+            onChange={(e) => {
+              frame.rows = Number(e.target.value);
+              setUpdate((u) => u + 1);
+              socket.emit("element:update", { roomId, frame });
+            }}
+          />
+        </label>
+        <label>
+          Columnas:
+          <input
+            type="number"
+            min={1}
+            className="border ml-1 w-10"
+            value={frame.cols || 3}
+            onChange={(e) => {
+              frame.cols = Number(e.target.value);
+              setUpdate((u) => u + 1);
+              socket.emit("element:update", { roomId, frame });
+            }}
+          />
+        </label>
+      </div>
+    )}
+  </div>
+)}
+
 
         {(frame.type === "text" || frame.type === "button") && isEditing && (
           <input

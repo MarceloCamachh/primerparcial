@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { v4 as uuidv4 } from "uuid";
 import { socket } from "../socket";
 
-export type ElementType = "rectangle" | "text" | "button" | "input";
+export type ElementType = "rectangle" | "text" | "button" | "input"| "checkbox" | "image" | "table";
 
 export type Frame = {
   id: string;
@@ -13,6 +13,8 @@ export type Frame = {
   width: number;
   height: number;
   backgroundColor?: string;
+  rows?: number;
+  cols?: number;
 };
 
 export function exportElements(elements: Frame[]) {
