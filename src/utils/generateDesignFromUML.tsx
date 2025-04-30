@@ -15,19 +15,19 @@ export const generateDesignFromUML = (parsed: any) => {
   const elementsArray = Array.isArray(ownedElement) ? ownedElement : [ownedElement];
   console.log("🧩 elementsArray:", elementsArray);
 
-  const conceptualPackage = elementsArray.find((el) => {
-    const packageName = el["UML:Package"]?._attributes?.name;
-    console.log("🔍 Reviso paquete:", packageName);
-    return packageName === "conceptual";
-  });
+  const availablePackages = elementsArray.filter(el => el["UML:Package"]);
+const selectedPackage = availablePackages[0];
 
-  if (!conceptualPackage) {
-    console.warn("⚠️ No se encontró el paquete 'conceptual'");
-    return { title: "Importado desde UML (sin clases)", elements: [] };
-  }
+if (!selectedPackage) {
+  console.warn("⚠️ No se encontró ningún paquete UML:Package");
+  return { title: "Importado desde UML (sin clases)", elements: [] };
+}
 
-  const packageElements = conceptualPackage["UML:Package"]?.["UML:Namespace.ownedElement"];
-  console.log("📦 Elements dentro del Package:", packageElements);
+const packageName = selectedPackage["UML:Package"]?._attributes?.name || "SinNombre";
+console.log("📦 Usando paquete:", packageName);
+
+  const packageElements = selectedPackage["UML:Package"]?.["UML:Namespace.ownedElement"];
+    console.log("📦 Elements dentro del Package:", packageElements);
 
   if (!packageElements) {
     console.warn("⚠️ No se encontró UML:Namespace.ownedElement dentro del paquete conceptual");
